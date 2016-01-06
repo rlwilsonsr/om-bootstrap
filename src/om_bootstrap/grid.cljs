@@ -15,7 +15,9 @@
   #{:xs :sm :md :lg
     :xs-offset :sm-offset :md-offset :lg-offset
     :xs-push :sm-push :md-push :lg-push
-    :xs-pull :sm-pull :md-pull :lg-pull})
+    :xs-pull :sm-pull :md-pull :lg-pull
+    :hidden-xs :hidden-sm :hidden-md :hidden-lg
+    :visible-xs-* :visible-sm-* :visible-md-* :visible-lg-* })
 
 (def Col
   (t/bootstrap
@@ -46,7 +48,11 @@
   [opts :- Col & children]
   (let [[bs props] (t/separate Col opts {})
         class (-> (map (fn [[k v]]
-                         (str "col-" (name k) "-" v))
+                          (if (= (name k) "hidden")
+                              (str "hidden-" v)
+                              (if (= (name k) "visible")
+                                  (str "visible-" v "-*")
+                                  (str "col-" (name k) "-" v))))
                        (select-keys bs col-keys))
                   (zipmap (repeat true))
                   (d/class-set))]
